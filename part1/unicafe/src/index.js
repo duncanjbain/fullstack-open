@@ -5,7 +5,7 @@ const Button = ({ handleClick, buttonText}) => (
   <button onClick={handleClick}>{buttonText}</button>
 );
 
-const Feedback = ({ ratingType, ratingTotal }) => (
+const Statistics = ({ ratingType, ratingTotal }) => (
   <div>
     <p>{ratingType} : {ratingTotal}</p>
   </div>
@@ -40,9 +40,9 @@ const App = () => {
       <div>
         <h2>Statisics</h2>
         <div>
-          <Feedback ratingType="Good" ratingTotal={good} />
-          <Feedback ratingType="Neutral" ratingTotal={neutral} />
-          <Feedback ratingType="Bad" ratingTotal={bad} />
+          <Statistics ratingType="Good" ratingTotal={good} />
+          <Statistics ratingType="Neutral" ratingTotal={neutral} />
+          <Statistics ratingType="Bad" ratingTotal={bad} />
         </div>
       </div>
     </div>
