@@ -40,9 +40,17 @@ const App = () => {
       <div>
         <h2>Statisics</h2>
         <div>
+        {(good===0 && bad===0 && neutral===0) &&
+          <p>No ratings..</p>}
+          {(good!==0 || bad!==0 || neutral!==0) &&
+          <>
           <Statistics ratingType="Good" ratingTotal={good} />
           <Statistics ratingType="Neutral" ratingTotal={neutral} />
-          <Statistics ratingType="Bad" ratingTotal={bad} />
+          <Statistics ratingType="Bad" ratingTotal={bad} /> 
+          <Statistics ratingType="All" ratingTotal={(good+neutral+bad)} />
+          <Statistics ratingType="Average" ratingTotal={(good+neutral-bad)/(good+bad+neutral)} />
+          <Statistics ratingType="Positive" ratingTotal={(good/(good+neutral+bad))*100} />
+          </>}
         </div>
       </div>
     </div>
