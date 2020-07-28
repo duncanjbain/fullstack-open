@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-const Button = ({ handleClick, buttonText}) => (
+const Button = ({ handleClick, buttonText }) => (
   <button onClick={handleClick}>{buttonText}</button>
 );
 
 const Statistics = ({ ratingType, ratingTotal }) => (
-  <div>
-    <p>{ratingType} : {ratingTotal}</p>
-  </div>
-)
+  <tr>
+    <td>
+      {ratingType} : {ratingTotal}
+    </td>
+  </tr>
+);
 
 const App = () => {
   // save clicks of each button to own state
@@ -18,16 +20,16 @@ const App = () => {
   const [bad, setBad] = useState(0);
 
   const handleGoodClick = () => {
-    setGood(good+1);
-  }
+    setGood(good + 1);
+  };
 
   const handleNeutralClick = () => {
-    setNeutral(neutral+1);
-  }
+    setNeutral(neutral + 1);
+  };
 
   const handleBadClick = () => {
-    setBad(bad+1);
-  }
+    setBad(bad + 1);
+  };
 
   return (
     <div>
@@ -38,20 +40,28 @@ const App = () => {
         <Button buttonText="Bad" handleClick={handleBadClick} />
       </div>
       <div>
-        <h2>Statisics</h2>
-        <div>
-        {(good===0 && bad===0 && neutral===0) &&
-          <p>No ratings..</p>}
-          {(good!==0 || bad!==0 || neutral!==0) &&
+        {good === 0 && bad === 0 && neutral === 0 && <p>No ratings..</p>}
+        {(good !== 0 || bad !== 0 || neutral !== 0) && (
           <>
-          <Statistics ratingType="Good" ratingTotal={good} />
-          <Statistics ratingType="Neutral" ratingTotal={neutral} />
-          <Statistics ratingType="Bad" ratingTotal={bad} /> 
-          <Statistics ratingType="All" ratingTotal={(good+neutral+bad)} />
-          <Statistics ratingType="Average" ratingTotal={(good+neutral-bad)/(good+bad+neutral)} />
-          <Statistics ratingType="Positive" ratingTotal={(good/(good+neutral+bad))*100} />
-          </>}
-        </div>
+          <h2>Statistics</h2>
+          <table>
+            <tbody>
+              <Statistics ratingType="Good" ratingTotal={good} />
+              <Statistics ratingType="Neutral" ratingTotal={neutral} />
+              <Statistics ratingType="Bad" ratingTotal={bad} />
+              <Statistics ratingType="All" ratingTotal={good + neutral + bad} />
+              <Statistics
+                ratingType="Average"
+                ratingTotal={(good + neutral - bad) / (good + bad + neutral)}
+              />
+              <Statistics
+                ratingType="Positive"
+                ratingTotal={(good / (good + neutral + bad)) * 100}
+              />
+            </tbody>
+          </table>
+          </>
+        )}
       </div>
     </div>
   );
