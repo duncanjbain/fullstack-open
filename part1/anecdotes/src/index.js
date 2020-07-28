@@ -1,11 +1,25 @@
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
+
 
 const App = (props) => {
   const [selected, setSelected] = useState(0)
 
+  const randomIntFromInterval = (min, max) => { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  const randomQuote = () => {
+    const selectedQuote = randomIntFromInterval(0,props.anecdotes.length);
+    setSelected(selectedQuote);
+  }
+
   return (
     <div>
-      {props.anecdotes[selected]}
+      <div>
+        {props.anecdotes[selected]}
+       </div>
+      <button onClick={() => randomQuote()}>New Quote</button>
     </div>
   )
 }
