@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 const App = (props) => {
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(Array(props.anecdotes.length).fill(0));
+  const [mostVoted, setMostVoted] = useState(NaN);
 
   const randomIntFromInterval = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -18,10 +19,12 @@ const App = (props) => {
     const newVotes = [...votes];
     newVotes[selected] = newVotes[selected] + 1;
     setVotes(newVotes);
+    const indexMostVoted = newVotes.indexOf(Math.max(...newVotes));
+    setMostVoted(indexMostVoted);
   };
 
-  const indexMostVoted = votes.indexOf(Math.max(...votes));
-  console.log(indexMostVoted)
+  
+
 
   return (
     <div>
@@ -38,7 +41,7 @@ const App = (props) => {
       </div>
       <div>
         <h2>Most Voted Anecdote of the Day</h2>
-        <p>{props.anecdotes[indexMostVoted]}</p>
+        <p>{props.anecdotes[mostVoted]}</p>
       </div>
     </div>
   );
