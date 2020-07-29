@@ -42,6 +42,7 @@ const App = (props) => {
       <div>
         <h2>Most Voted Anecdote of the Day</h2>
         <p>{props.anecdotes[mostVoted]}</p>
+        {mostVoted>=0 && <p> with a total of {votes[mostVoted]} votes</p>}
       </div>
     </div>
   );
