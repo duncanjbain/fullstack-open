@@ -9,18 +9,14 @@ const App = () => {
   ]);
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
-  const [showAll, setShowAll] = useState(true);
   const [nameSearch, setNewNameSearch] = useState("");
 
-  const personsToShow = showAll
-    ? persons
-    : persons.filter((person) =>
-        person.name.toLowerCase().includes(nameSearch)
-      );
+  const personsToShow = persons.filter((person) =>
+    person.name.toLowerCase().includes(nameSearch.toLowerCase())
+  );
 
   const handleNameSearchChange = (event) => {
     setNewNameSearch(event.target.value);
-    setShowAll(false);
   };
 
   const handleNameChange = (event) => {
@@ -54,18 +50,21 @@ const App = () => {
         filter names with{" "}
         <input value={nameSearch} onChange={handleNameSearchChange} />
       </div>
-      <form onSubmit={addName}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          phone number:{" "}
-          <input value={newPhoneNumber} onChange={handlePhoneNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <div>
+        <h2>Phone Numbers</h2>
+        <form onSubmit={addName}>
+          <div>
+            name: <input value={newName} onChange={handleNameChange} />
+          </div>
+          <div>
+            phone number:{" "}
+            <input value={newPhoneNumber} onChange={handlePhoneNumberChange} />
+          </div>
+          <div>
+            <button type="submit">add</button>
+          </div>
+        </form>
+      </div>
       <div>
         <h2>Numbers</h2>
         {personsToShow.map((person) => (
