@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ListCountries from "./ListCountries";
-import TooManyCountries from "./TooManyCountries";
 
 const App = () => {
   const [allCountries, updateAllCountries] = useState([]);
@@ -34,7 +33,6 @@ const App = () => {
         </section>
         <section>
           <ListCountries countryList={filteredCountries} />
-          <TooManyCountries />
         </section>
       </main>
     </div>
