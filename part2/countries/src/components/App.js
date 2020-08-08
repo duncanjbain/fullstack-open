@@ -7,7 +7,6 @@ const App = () => {
   const [searchTerm, updateSearchTerm] = useState("");
   const [filteredCountries, updateFilteredCountries] = useState([]);
 
-
   useEffect(() => {
     axios
       .get("https://restcountries.eu/rest/v2/all")
@@ -23,14 +22,14 @@ const App = () => {
   };
 
   const handleShowClick = (name) => {
-    console.log('show click', name)
+    console.log("show click", name);
     const singleCountry = filteredCountries.filter((country) =>
       country.name.toLowerCase().includes(name.toLowerCase())
     );
-    console.log(singleCountry)
+    console.log(singleCountry);
     updateFilteredCountries(singleCountry);
-  }
-  
+  };
+
   return (
     <div>
       <header>
@@ -42,7 +41,10 @@ const App = () => {
           Search for: <input onChange={handleSearchChange} value={searchTerm} />
         </section>
         <section>
-          <ListCountries countryList={filteredCountries} handleShowClick={handleShowClick} />
+          <ListCountries
+            countryList={filteredCountries}
+            handleShowClick={handleShowClick}
+          />
         </section>
       </main>
     </div>
