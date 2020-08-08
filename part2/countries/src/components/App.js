@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import ListCountries from "./ListCountries";
+import TooManyCountries from "./TooManyCountries";
 
 const App = () => {
   const [allCountries, updateAllCountries] = useState([]);
   const [searchTerm, updateSearchTerm] = useState("");
   const [filteredCountries, updateFilteredCountries] = useState([]);
 
-  const handleSearchChange = (event) => {
-    updateSearchTerm(event.target.value);
-    const filteredCountries = allCountries.filter((country) =>
-    country.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  updateFilteredCountries(filteredCountries);
-  };
-  
   useEffect(() => {
     axios
       .get("https://restcountries.eu/rest/v2/all")
       .then((response) => updateAllCountries(response.data));
-  });
+  }, []);
+
+  const handleSearchChange = (event) => {
+    updateSearchTerm(event.target.value);
+    const filteredCountries = allCountries.filter((country) =>
+      country.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    updateFilteredCountries(filteredCountries);
+  };
 
   return (
     <div>
@@ -30,12 +32,10 @@ const App = () => {
           <h2>Search for countries below</h2>
           Search for: <input onChange={handleSearchChange} value={searchTerm} />
         </section>
-        <ul>
-          {filteredCountries.length < 10 &&
-          filteredCountries.map((country) => (
-            <li key={country.name}>{country.name}</li>)
-          )}
-        </ul>
+        <section>
+          <ListCountries countryList={filteredCountries} />
+          <TooManyCountries />
+        </section>
       </main>
     </div>
   );
