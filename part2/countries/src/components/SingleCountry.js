@@ -1,4 +1,5 @@
 import React from "react";
+import Weather from './Weather';
 
 const SingleCountry = ({ singleCountry }) => {
   return (
@@ -17,6 +18,7 @@ const SingleCountry = ({ singleCountry }) => {
         alt={`{Flag of ${singleCountry.name}}`}
         width={`250px`}
       ></img>
+      <Weather countryName={singleCountry.name}lat={singleCountry.latlng[0]} long={singleCountry.latlng[1]} />
     </section>
   );
 };
