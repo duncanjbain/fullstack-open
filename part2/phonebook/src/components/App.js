@@ -14,7 +14,7 @@ const App = () => {
     axios.get('http://localhost:3001/persons').then(response => (
       setPersons(response.data)
     ))
-  })
+  },[])
 
   const personsToShow = persons.filter((person) =>
     person.name.toLowerCase().includes(nameSearch.toLowerCase())
@@ -40,7 +40,9 @@ const App = () => {
     };
     const nameExists = persons.some((item) => item.name === newName);
     if (!nameExists) {
-      setPersons(persons.concat(newNameObject)); //copy state and add new name object to end of object and set state
+      axios.post('http://localhost:3001/persons',newNameObject).then((response) => {
+        setPersons(persons.concat(response.data))
+      })
     } else {
       window.alert(`Sorry, the name "${newName}" already exists!`);
     }
