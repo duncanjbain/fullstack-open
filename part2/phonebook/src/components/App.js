@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
 import AddPersonForm from "./AddPersonForm";
 import Search from "./Search";
 import DisplayPersons from "./DisplayPersons";
+import personService from "../services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,14 +11,8 @@ const App = () => {
   const [nameSearch, setNewNameSearch] = useState("");
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(response => (
-      setPersons(response.data)
-    ))
-  },[])
-
-  const personsToShow = persons.filter((person) =>
-    person.name.toLowerCase().includes(nameSearch.toLowerCase())
-  );
+    personService.getAll().then(initialPersons => setPersons(initialPersons));
+  }, []);
 
   const handleNameSearchChange = (event) => {
     setNewNameSearch(event.target.value);
@@ -32,6 +26,10 @@ const App = () => {
     setNewPhoneNumber(event.target.value);
   };
 
+  const personsToShow = persons.filter((person) =>
+    person.name.toLowerCase().includes(nameSearch.toLowerCase())
+  );
+
   const addName = (event) => {
     event.preventDefault();
     const newNameObject = {
@@ -40,8 +38,8 @@ const App = () => {
     };
     const nameExists = persons.some((item) => item.name === newName);
     if (!nameExists) {
-      axios.post('http://localhost:3001/persons',newNameObject).then((response) => {
-        setPersons(persons.concat(response.data))
+      personService.createNewPerson(newNameObject).then((returnedPersons) => {
+      setPersons(persons.concat(returnedPersons))
       })
     } else {
       window.alert(`Sorry, the name "${newName}" already exists!`);
@@ -53,7 +51,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Search nameSearch={nameSearch} handleNameChange={handleNameSearchChange} />
+      <Search
+        nameSearch={nameSearch}
+        handleNameChange={handleNameSearchChange}
+      />
       <div>
         <h2>Phone Numbers</h2>
         <AddPersonForm
