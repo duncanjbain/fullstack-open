@@ -9,10 +9,11 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [nameSearch, setNewNameSearch] = useState("");
+  const [reloadPersons, setReloadPersons] = useState(false)
 
   useEffect(() => {
     personService.getAll().then(initialPersons => setPersons(initialPersons));
-  }, []);
+  }, [reloadPersons]);
 
   const handleNameSearchChange = (event) => {
     setNewNameSearch(event.target.value);
@@ -48,6 +49,12 @@ const App = () => {
     setNewPhoneNumber("");
   };
 
+const deleteName = (personID) => {
+  personService.deletePerson(personID).then((returnedPersons) => {
+    setReloadPersons(true)
+  })
+}
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -65,7 +72,7 @@ const App = () => {
           newPhoneNumber={newPhoneNumber}
         />
       </div>
-      <DisplayPersons personsToShow={personsToShow} />
+      <DisplayPersons personsToShow={personsToShow} deleteName={deleteName} />
     </div>
   );
 };
