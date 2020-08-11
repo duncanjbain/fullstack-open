@@ -57,11 +57,18 @@ app.get('/api/info', (req,res) => {
 
 app.post('/api/persons', (req,res) => {
   const newPerson = req.body;
-  console.log(req.body)
+  if(!newPerson.name) {
+    res.status(400).send({"Error": "name missing"})
+  }
+  if(!newPerson.number) {
+    res.status(400).send({"Error": "number missing"})
+  }
+  if(persons.find(person => person.name == newPerson.name)) {
+    res.status(400).send({"Error": "name already exists"})
+  }
   newPerson.id = uuid();
   persons = persons.concat(newPerson)
   res.json(newPerson)
-  res.status(204).end()
 })
 
 const PORT = 3001
