@@ -9,10 +9,10 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [nameSearch, setNewNameSearch] = useState("");
-  const [reloadPersons, setReloadPersons] = useState(false)
+  const [reloadPersons, setReloadPersons] = useState(false);
 
   useEffect(() => {
-    personService.getAll().then(initialPersons => setPersons(initialPersons));
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
   }, [reloadPersons]);
 
   const handleNameSearchChange = (event) => {
@@ -40,20 +40,38 @@ const App = () => {
     const nameExists = persons.some((item) => item.name === newName);
     if (!nameExists) {
       personService.createNewPerson(newNameObject).then((returnedPersons) => {
-      setPersons(persons.concat(returnedPersons))
-      })
+        setPersons(persons.concat(returnedPersons));
+      });
     } else {
-      window.alert(`Sorry, the name "${newName}" already exists!`);
+      if (
+        window.confirm(
+          `Sorry, the name "${newName}" already exists! Do you wish to update the existing number?`
+        )
+      ) {
+        const person = persons.find((p) => p.name === newName);
+        const personId = person.id;
+        personService
+          .updatePerson(personId, newNameObject)
+          .then((returnedPersons) => {
+            setPersons(
+              persons.map((person) =>
+                person.name !== personId ? person : returnedPersons
+              )
+            );
+          });
+        setReloadPersons(true);
+      }
     }
+
     setNewName(""); //clear new name state
     setNewPhoneNumber("");
   };
 
-const deleteName = (personID) => {
-  if(window.confirm('Delete this person?')) {
-  personService.deletePerson(personID).then(setReloadPersons(true))
-  }
-}
+  const deleteName = (personID) => {
+    if (window.confirm("Delete this person?")) {
+      personService.deletePerson(personID).then(setReloadPersons(true));
+    }
+  };
 
   return (
     <div>
