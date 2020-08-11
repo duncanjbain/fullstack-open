@@ -50,9 +50,9 @@ const App = () => {
   };
 
 const deleteName = (personID) => {
-  personService.deletePerson(personID).then((returnedPersons) => {
-    setReloadPersons(true)
-  })
+  if(window.confirm('Delete this person?')) {
+  personService.deletePerson(personID).then(setReloadPersons(true))
+  }
 }
 
   return (
