@@ -58,13 +58,13 @@ app.get('/api/info', (req,res) => {
 app.post('/api/persons', (req,res) => {
   const newPerson = req.body;
   if(!newPerson.name) {
-    res.status(400).send({"Error": "name missing"})
+    return res.status(400).send({Error: "name missing"})
   }
   if(!newPerson.number) {
-    res.status(400).send({"Error": "number missing"})
+    return res.status(400).send({Error: "number missing"})
   }
   if(persons.find(person => person.name == newPerson.name)) {
-    res.status(400).send({"Error": "name already exists"})
+    return res.status(400).send({Error: "name already exists"})
   }
   newPerson.id = uuid();
   persons = persons.concat(newPerson)
