@@ -1,9 +1,16 @@
 const express = require('express')
 const uuid = require('uuid-random');
+const morgan = require('morgan');
 
 const app = express()
 
 app.use(express.json())
+
+morgan.token('reqBody', function(req, res) {
+  return JSON.stringify(req.body);
+});
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :reqBody')); // This is a modified version of morgan's tiny predefined format string.)
 
 let persons =[
   { 
