@@ -12,7 +12,7 @@ const App = () => {
   const [nameSearch, setNewNameSearch] = useState("");
   const [reloadPersons, setReloadPersons] = useState(false);
   const [notitficationMessage, setNotificationMessage] = useState(null);
-  const [notificationType, setNotificationType] = useState('');
+  const [notificationType, setNotificationType] = useState("");
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -101,9 +101,14 @@ const App = () => {
   const deleteName = (personID) => {
     if (window.confirm("Delete this person?")) {
       const person = persons.find((p) => p.id === personID);
-      personService.deletePerson(personID).then(setReloadPersons(true)).catch(error => {
-        handleErrorNotification(`The person ${person.name} has already been removed!`)
-      });
+      personService
+        .deletePerson(personID)
+        .then(setReloadPersons(true))
+        .catch((error) => {
+          handleErrorNotification(
+            `The person ${person.name} has already been removed!`
+          );
+        });
     }
   };
 

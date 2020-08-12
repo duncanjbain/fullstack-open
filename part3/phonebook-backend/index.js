@@ -1,9 +1,11 @@
 const express = require('express')
 const uuid = require('uuid-random');
 const morgan = require('morgan');
+const cors = require('cors')
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 
 morgan.token('reqBody', function(req, res) {
@@ -44,8 +46,7 @@ app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
   const person = persons.find(person => person.id === id)
   if(person) {
-  res.json(person)
-  res.status(200).end()
+  return res.json(person).status(200)
   }
   res.status(404).end()
 })
