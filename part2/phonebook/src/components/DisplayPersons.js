@@ -5,7 +5,7 @@ const DisplayPersons = ({ personsToShow, deleteName }) => {
     <div>
       <h2>Numbers</h2>
       {personsToShow.map((person) => (
-        <li key={person.name}>
+        <li key={person.id}>
           {person.name} - {person.number} <button onClick={() => deleteName(person.id)} key={person.id}>Delete</button>
         </li>
       ))}

@@ -3,6 +3,7 @@ import AddPersonForm from "./AddPersonForm";
 import Search from "./Search";
 import DisplayPersons from "./DisplayPersons";
 import personService from "../services/persons";
+import Notification from "./Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,6 +11,8 @@ const App = () => {
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [nameSearch, setNewNameSearch] = useState("");
   const [reloadPersons, setReloadPersons] = useState(false);
+  const [notitficationMessage, setNotificationMessage] = useState(null);
+  const [notificationType, setNotificationType] = useState("");
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -31,6 +34,22 @@ const App = () => {
     person.name.toLowerCase().includes(nameSearch.toLowerCase())
   );
 
+  const handleErrorNotification = (message) => {
+    setNotificationType("error");
+    setNotificationMessage(message);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 5000);
+  };
+
+  const handleSuccessNotification = (message) => {
+    setNotificationType("success");
+    setNotificationMessage(message);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 5000);
+  };
+
   const addName = (event) => {
     event.preventDefault();
     const newNameObject = {
@@ -39,9 +58,16 @@ const App = () => {
     };
     const nameExists = persons.some((item) => item.name === newName);
     if (!nameExists) {
-      personService.createNewPerson(newNameObject).then((returnedPersons) => {
-        setPersons(persons.concat(returnedPersons));
-      });
+      personService
+        .createNewPerson(newNameObject)
+        .then((returnedPersons) => {
+          setPersons(persons.concat(returnedPersons));
+        })
+        .then(
+          handleSuccessNotification(
+            `Success! The number for ${newName} has been updated.`
+          )
+        );
     } else {
       if (
         window.confirm(
@@ -58,7 +84,12 @@ const App = () => {
                 person.name !== personId ? person : returnedPersons
               )
             );
-          });
+          })
+          .then(
+            handleSuccessNotification(
+              `Success! The number for ${newName} has been updated.`
+            )
+          );
         setReloadPersons(true);
       }
     }
@@ -69,17 +100,30 @@ const App = () => {
 
   const deleteName = (personID) => {
     if (window.confirm("Delete this person?")) {
-      personService.deletePerson(personID).then(setReloadPersons(true));
+      const person = persons.find((p) => p.id === personID);
+      personService
+        .deletePerson(personID)
+        .then(setReloadPersons(true))
+        .catch((error) => {
+          handleErrorNotification(
+            `The person ${person.name} has already been removed!`
+          );
+        });
     }
   };
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <Search
-        nameSearch={nameSearch}
-        handleNameChange={handleNameSearchChange}
-      />
+      <Notification message={notitficationMessage} type={notificationType} />
+      <section>
+        <header>
+          <h2>Phonebook</h2>
+        </header>
+        <Search
+          nameSearch={nameSearch}
+          handleNameChange={handleNameSearchChange}
+        />
+      </section>
       <div>
         <h2>Phone Numbers</h2>
         <AddPersonForm
