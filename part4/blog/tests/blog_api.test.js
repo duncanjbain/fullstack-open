@@ -57,6 +57,26 @@ test("making a correctly formatted POST request to /api/blogs creates a new reco
   expect(result.body[4].title).toBe("Test Blog");
 });
 
+test("submitting a POST request to /api/blogs that is missing a likes field creates a blog record with likes equal to 0", async () => {
+  await api
+    .post("/api/blogs")
+    .send({
+      title: "No Likes",
+      author: "Test Author",
+      url: "test.com",
+    })
+    .set("Accept", "application/json")
+    .expect("Content-Type", /json/)
+    .expect(201);
+
+  const result = await api
+    .get("/api/blogs/")
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  expect(result.body[4].likes).toBe(0);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
