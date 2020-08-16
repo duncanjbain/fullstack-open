@@ -77,6 +77,18 @@ test("submitting a POST request to /api/blogs that is missing a likes field crea
   expect(result.body[4].likes).toBe(0);
 });
 
+test("submitting a POST request without a title and author field is rejected with code 400", async () => {
+  await api
+  .post("/api/blogs")
+  .send({
+    "url": "test.com",
+    "likes": 15,
+  })
+  .set("Accept", "application/json")
+  .expect("Content-Type", /json/)
+  .expect(400);
+})
+
 afterAll(() => {
   mongoose.connection.close();
 });
