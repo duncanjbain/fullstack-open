@@ -33,7 +33,28 @@ test("the blog has an ID field", async () => {
     .get("/api/blogs/")
     .expect(200)
     .expect("Content-Type", /application\/json/);
-    expect(result.body[0].id).toBeDefined();
+  expect(result.body[0].id).toBeDefined();
+});
+
+test("making a correctly formatted POST request to /api/blogs creates a new record", async () => {
+  await api
+    .post("/api/blogs")
+    .send({
+      title: "Test Blog",
+      author: "Test Author",
+      url: "test.com",
+      likes: 15,
+    })
+    .set("Accept", "application/json")
+    .expect("Content-Type", /json/)
+    .expect(201);
+
+  const result = await api
+    .get("/api/blogs/")
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  expect(result.body[4].title).toBe("Test Blog");
 });
 
 afterAll(() => {
