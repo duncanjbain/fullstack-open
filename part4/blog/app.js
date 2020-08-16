@@ -7,14 +7,16 @@ const notesRouter = require('./controllers/blogs')
 
 const mongoUrl = config.MONGODB_URI;
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+.then(() => {
+  console.log('connected to MongoDB', mongoUrl)
+})
+.catch((error) => {
+  console.log('error connection to MongoDB:', error.message)
+})
 
 
 app.use(cors())
 app.use(express.json())
 app.use('/api/blogs',notesRouter)
 
-
-const PORT = config.PORT || 3003
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+module.exports = app
