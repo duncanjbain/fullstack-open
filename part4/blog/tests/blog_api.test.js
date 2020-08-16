@@ -4,7 +4,7 @@ const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blogs");
 const helper = require("./test_helper");
-const { post } = require("../app");
+
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -97,7 +97,6 @@ test("can delete blog with DELETE request and blog ID", async () => {
     .expect("Content-Type", /application\/json/);
 
   const blogID = initResponse.body[0].id;
-  console.log(blogID);
 
   await api
     .delete(`/api/blogs/${blogID}`)
@@ -111,6 +110,34 @@ test("can delete blog with DELETE request and blog ID", async () => {
     expect(blogID).not.toBe(finalResponse.body[0].id)
 
 });
+
+test("can update number of likes with a PUT request with blog ID and new number of likes", async () => {
+  const initResponse = await api
+  .get("/api/blogs/")
+  .expect(200)
+  .expect("Content-Type", /application\/json/);
+  const initLikes = initResponse.body[0].likes
+  const blogID = initResponse.body[0].id
+  console.log(initLikes, blogID)
+
+  const request = await api
+    .patch(`/api/blogs/${blogID}/`)
+    .send({
+      likes: 55,
+    })
+    .set("Accept", "application/json")
+    .expect("Content-Type", /json/)
+    .expect(200)
+
+  const finalResponse = await api
+  .get("/api/blogs/")
+  .expect(200)
+  .expect("Content-Type", /application\/json/);
+
+  expect(initLikes).not.toBe(finalResponse.body[0].likes)
+  expect(finalResponse.body[0].likes).toBe(55)
+
+})
 
 afterAll(() => {
   mongoose.connection.close();
