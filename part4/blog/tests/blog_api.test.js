@@ -4,6 +4,7 @@ const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blogs");
 const helper = require("./test_helper");
+const { post } = require("../app");
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -79,15 +80,37 @@ test("submitting a POST request to /api/blogs that is missing a likes field crea
 
 test("submitting a POST request without a title and author field is rejected with code 400", async () => {
   await api
-  .post("/api/blogs")
-  .send({
-    "url": "test.com",
-    "likes": 15,
-  })
-  .set("Accept", "application/json")
-  .expect("Content-Type", /json/)
-  .expect(400);
-})
+    .post("/api/blogs")
+    .send({
+      url: "test.com",
+      likes: 15,
+    })
+    .set("Accept", "application/json")
+    .expect("Content-Type", /json/)
+    .expect(400);
+});
+
+test("can delete blog with DELETE request and blog ID", async () => {
+  const initResponse = await api
+    .get("/api/blogs")
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  const blogID = initResponse.body[0].id;
+  console.log(blogID);
+
+  await api
+    .delete(`/api/blogs/${blogID}`)
+    .expect(204);
+
+  const finalResponse = await api
+    .get("/api/blogs")
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+    expect(blogID).not.toBe(finalResponse.body[0].id)
+
+});
 
 afterAll(() => {
   mongoose.connection.close();
