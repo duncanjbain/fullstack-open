@@ -4,22 +4,17 @@ const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blogs");
 const helper = require("./test_helper");
+const bcrypt = require('bcrypt')
+const User = require('../models/users')
 
 
 beforeEach(async () => {
   await Blog.deleteMany({});
 
-  let blogObject = new Blog(helper.initialBlogs[0]);
-  await blogObject.save();
+const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
+const promiseArray = blogObjects.map(blog => blog.save())
+await Promise.all(promiseArray)
 
-  blogObject = new Blog(helper.initialBlogs[1]);
-  await blogObject.save();
-
-  blogObject = new Blog(helper.initialBlogs[2]);
-  await blogObject.save();
-
-  blogObject = new Blog(helper.initialBlogs[3]);
-  await blogObject.save();
 });
 
 test("notes are returned as json", async () => {
@@ -118,7 +113,6 @@ test("can update number of likes with a PUT request with blog ID and new number 
   .expect("Content-Type", /application\/json/);
   const initLikes = initResponse.body[0].likes
   const blogID = initResponse.body[0].id
-  console.log(initLikes, blogID)
 
   const request = await api
     .patch(`/api/blogs/${blogID}/`)
@@ -136,6 +130,35 @@ test("can update number of likes with a PUT request with blog ID and new number 
 
   expect(initLikes).not.toBe(finalResponse.body[0].likes)
   expect(finalResponse.body[0].likes).toBe(55)
+
+})
+
+describe('when there is initially one user in the db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('secret', 10)
+    const user = new User({username: 'root', passwordHash})
+    await user.save()
+  })
+
+  test('successfully create new user', async () => {
+    const initialUsers = await helper.usersInDB()
+
+    const newUser = {
+      username: "duncanbain",
+      name: "Duncan Bain",
+      password: "testpassword"
+    }
+
+    await api.post("/api/users").send(newUser).expect(200).expect('Content-Type', /application\/json/)
+
+    const endUsers = await helper.usersInDB()
+    expect(endUsers).toHaveLength(initialUsers.length +1)
+
+    const usernames = endUsers.map(user => user.username)
+    expect(usernames).toContain(newUser.username)
+  })
 
 })
 
