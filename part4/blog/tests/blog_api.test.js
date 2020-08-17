@@ -146,8 +146,8 @@ describe('when there is initially one user in the db', () => {
     const initialUsers = await helper.usersInDB()
 
     const newUser = {
-      username: "duncanbain",
-      name: "Duncan Bain",
+      username: "testuser",
+      name: "Test User",
       password: "testpassword"
     }
 
@@ -159,6 +159,26 @@ describe('when there is initially one user in the db', () => {
     const usernames = endUsers.map(user => user.username)
     expect(usernames).toContain(newUser.username)
   })
+
+  test('user creation fails without a username', async () => {
+    const newUser = {
+      name: "Test User",
+      password: "testpassword"
+    }
+
+    await api.post("/api/users").send(newUser).expect(400).expect('Content-Type', /application\/json/)
+  })
+
+  test('user creation fails with a password less than 3 characters long', async () => {
+    const newUser = {
+      name: "Test User",
+      username: "testuser",
+      password: "1"
+    }
+
+    await api.post("/api/users").send(newUser).expect(400).expect('Content-Type', /application\/json/)
+  })
+
 
 })
 
