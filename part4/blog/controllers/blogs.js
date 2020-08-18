@@ -36,12 +36,32 @@ blogsRouter.post("/", async (request, response) => {
 });
 
 blogsRouter.delete("/:id", async (request, response) => {
+  const token = request.token;
+  const blogToDelete = await Blog.findById(request.params.id);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  if (!token || !decodedToken) {
+    return response.status(401).json({ error: "token missing or invalid" });
+  }
+
+  if (blogToDelete.user.toString() !== decodedToken.id) {
+    return response.status(401).json({ error: "you do not own this blog" });
+  }
+
   try {
     await Blog.findByIdAndDelete(request.params.id);
     response.status(204).end();
   } catch (exception) {
     next(exception);
   }
+});
+
+blogsRouter.get("/:id", async (request, response) => {
+  const singleBlog = await Blog.findById(request.params.id).populate("user", {
+    username: 1,
+    name: 1,
+  });
+  return response.status(200).json(singleBlog);
 });
 
 blogsRouter.patch("/:id", async (request, response) => {
