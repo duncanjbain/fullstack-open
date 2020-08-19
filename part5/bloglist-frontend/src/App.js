@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from "react";
-import Blog from "./components/Blog";
+import DisplayBlogs from "./components/DisplayBlogs";
 import LoginForm from "./components/LoginForm";
+import Notification from "./components/Notification"
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [notitficationMessage, setNotificationMessage] = useState(null);
+  const [notificationType, setNotificationType] = useState("");
+
+  const handleErrorNotification = (message) => {
+    setNotificationType("error");
+    setNotificationMessage(message);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 5000);
+  };
+
+  const handleSuccessNotification = (message) => {
+    setNotificationType("success");
+    setNotificationMessage(message);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 5000);
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -36,20 +56,20 @@ const App = () => {
 
   return (
     <div>
+            <Notification message={notitficationMessage} type={notificationType} />
       <header>
         <h1>Blog App</h1>
       </header>
-      <LoginForm
+      {user === null && <LoginForm
         handleLogin={handleLogin}
         username={username}
         password={password}
         handleUserNameChange={handleUserNameChange}
         handlePasswordChange={handlePasswordChange}
-      />
+      /> }
+      {user !== null && <h2>Welcome, {user.username}!</h2>}
       <h2>blogs</h2>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      {user !== null && <DisplayBlogs blogs={blogs} /> }
     </div>
   );
 };
