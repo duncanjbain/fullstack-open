@@ -15,6 +15,11 @@ const Blog = ({ blog }) => {
     blogService.addLike(blog.id,newLikes)
   };
 
+  const deleteBlog = (event) => {
+    event.preventDefault()
+    blogService.deleteBlog(blog.id)
+  }
+  
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -37,6 +42,9 @@ const Blog = ({ blog }) => {
             Total Likes: {blog.likes} <button onClick={voteLike}>Like!</button>
           </div>
           <div>Blog Author: {blog.author}</div>
+          <div>
+            <button onClick={deleteBlog}>Delete Blog</button>
+          </div>
         </>
       )}
     </div>

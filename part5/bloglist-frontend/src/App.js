@@ -19,6 +19,8 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  const blogsSortedByLikes = [...blogs].sort((a, b) => b.likes - a.likes);
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedInBlogUser");
     if (loggedUserJSON) {
@@ -106,7 +108,7 @@ const App = () => {
       {user !== null && <h2>Welcome, {user.username}!</h2>}
       {user !== null && <BlogForm />}
       <h2>blogs</h2>
-      {user !== null && <DisplayBlogs blogs={blogs} />}
+      {user !== null && <DisplayBlogs blogs={blogsSortedByLikes} />}
     </div>
   );
 };
