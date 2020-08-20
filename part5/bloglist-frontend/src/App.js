@@ -5,6 +5,7 @@ import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import AddBlogForm from "./components/AddBlogForm";
+import Toggleable from "./components/Toggleable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -13,11 +14,6 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [notitficationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState("");
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogAuthor, setBlogAuthor] = useState("");
-  const [blogUrl, setBlogUrl] = useState("");
-
-
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -66,24 +62,13 @@ const App = () => {
     }
   };
 
-  const handleBlogAdd = async (event) => {
-    event.preventDefault();
-    const newBlog = { title: blogTitle, author: blogAuthor, url: blogUrl}
+  const handleBlogAdd = async (newBlog) => {
     const authToken = user.token
     console.log(authToken)
       await blogService.addBlog(newBlog, authToken)
-      handleSuccessNotification(`Great, a new blog titled ${blogTitle} has been added!`)
+      handleSuccessNotification(`Great, a new blog titled ${newBlog.title} has been added!`)
+      blogService.getAll().then((blogs) => setBlogs(blogs));
   }
-
-  const handleBlogAuthorChange = (event) => {
-    setBlogAuthor(event.target.value);
-  };
-  const handleBlogTitleChange = (event) => {
-    setBlogTitle(event.target.value);
-  };
-  const handleBlogUrlChange = (event) => {
-    setBlogUrl(event.target.value);
-  };
 
   const handleUserNameChange = (event) => {
     setUsername(event.target.value);
@@ -110,15 +95,11 @@ const App = () => {
         />
       )}
       {user !== null && <h2>Welcome, {user.username}!</h2>}
-      {user !== null && <AddBlogForm
-        blogTitle={blogTitle}
-        blogAuthor={blogAuthor}
-        blogUrl={blogUrl}
-        handleBlogAuthorChange={handleBlogAuthorChange}
-        handleBlogTitleChange={handleBlogTitleChange}
-        handleBlogUrlChange={handleBlogUrlChange}
+      {user !== null && 
+        <Toggleable buttonLabel="New blog">
+        <AddBlogForm
         handleBlogAdd={handleBlogAdd}
-      />}
+      /></Toggleable>}
       <h2>blogs</h2>
       {user !== null && <DisplayBlogs blogs={blogs} />}
     </div>
