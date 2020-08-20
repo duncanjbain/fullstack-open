@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DisplayBlogs from "./components/DisplayBlogs";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
@@ -14,6 +14,8 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [notitficationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState("");
+
+  
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -62,10 +64,18 @@ const App = () => {
     }
   };
 
+  const BlogFormRef = useRef()
+  const BlogForm = () => (
+    <Toggleable buttonLabel="New blog" ref={BlogFormRef}>
+    <AddBlogForm handleBlogAdd={handleBlogAdd} ref={BlogFormRef}/>
+    </Toggleable>
+  )
+  
   const handleBlogAdd = async (newBlog) => {
     const authToken = user.token
-    console.log(authToken)
       await blogService.addBlog(newBlog, authToken)
+      console.log(BlogFormRef)
+      BlogFormRef.current.toggleVisibility()
       handleSuccessNotification(`Great, a new blog titled ${newBlog.title} has been added!`)
       blogService.getAll().then((blogs) => setBlogs(blogs));
   }
@@ -78,6 +88,8 @@ const App = () => {
     setPassword(event.target.value);
   };
 
+
+ 
 
   return (
     <div>
@@ -95,11 +107,7 @@ const App = () => {
         />
       )}
       {user !== null && <h2>Welcome, {user.username}!</h2>}
-      {user !== null && 
-        <Toggleable buttonLabel="New blog">
-        <AddBlogForm
-        handleBlogAdd={handleBlogAdd}
-      /></Toggleable>}
+      {user !== null && <BlogForm />}
       <h2>blogs</h2>
       {user !== null && <DisplayBlogs blogs={blogs} />}
     </div>
