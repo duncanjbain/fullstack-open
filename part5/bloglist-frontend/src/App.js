@@ -15,21 +15,19 @@ const App = () => {
   const [notitficationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState("");
 
-  
-
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedInBlogUser')
-    if(loggedUserJSON) {
-      console.log(loggedUserJSON)
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+    const loggedUserJSON = window.localStorage.getItem("loggedInBlogUser");
+    if (loggedUserJSON) {
+      console.log(loggedUserJSON);
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
     }
-  },[])
+  }, []);
 
   const handleErrorNotification = (message) => {
     setNotificationType("error");
@@ -52,33 +50,35 @@ const App = () => {
     try {
       const userToLogin = await loginService.login({ username, password });
       window.localStorage.setItem(
-        'loggedInBlogUser', JSON.stringify(userToLogin)
-      ) 
-      blogService.setToken(userToLogin.token)
+        "loggedInBlogUser",
+        JSON.stringify(userToLogin)
+      );
+      blogService.setToken(userToLogin.token);
       setUser(userToLogin);
       setUsername("");
       setPassword("");
     } catch (exception) {
-      handleErrorNotification('Wrong username or password entered!')
-
+      handleErrorNotification("Wrong username or password entered!");
     }
   };
 
-  const BlogFormRef = useRef()
+  const BlogFormRef = useRef();
   const BlogForm = () => (
     <Toggleable buttonLabel="New blog" ref={BlogFormRef}>
-    <AddBlogForm handleBlogAdd={handleBlogAdd} ref={BlogFormRef}/>
+      <AddBlogForm handleBlogAdd={handleBlogAdd} />
     </Toggleable>
-  )
-  
+  );
+
   const handleBlogAdd = async (newBlog) => {
-    const authToken = user.token
-      await blogService.addBlog(newBlog, authToken)
-      console.log(BlogFormRef)
-      BlogFormRef.current.toggleVisibility()
-      handleSuccessNotification(`Great, a new blog titled ${newBlog.title} has been added!`)
-      blogService.getAll().then((blogs) => setBlogs(blogs));
-  }
+    const authToken = user.token;
+    await blogService.addBlog(newBlog, authToken);
+    console.log(BlogFormRef);
+    BlogFormRef.current.toggleVisibility();
+    handleSuccessNotification(
+      `Great, a new blog titled ${newBlog.title} has been added!`
+    );
+    blogService.getAll().then((blogs) => setBlogs(blogs));
+  };
 
   const handleUserNameChange = (event) => {
     setUsername(event.target.value);
@@ -87,9 +87,6 @@ const App = () => {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
-
-
- 
 
   return (
     <div>
