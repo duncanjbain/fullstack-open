@@ -61,7 +61,8 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      console.log(exception);
+      handleErrorNotification('Wrong username or password entered!')
+
     }
   };
 
@@ -71,6 +72,7 @@ const App = () => {
     const authToken = user.token
     console.log(authToken)
       await blogService.addBlog(newBlog, authToken)
+      handleSuccessNotification(`Great, a new blog titled ${blogTitle} has been added!`)
   }
 
   const handleBlogAuthorChange = (event) => {
