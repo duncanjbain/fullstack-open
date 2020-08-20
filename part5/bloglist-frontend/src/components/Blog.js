@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import blogService from '../services/blogs'
+
 const Blog = ({ blog }) => {
   const [blogDetailVisible, setBlogDetailVisible] = useState(false);
 
@@ -8,11 +10,10 @@ const Blog = ({ blog }) => {
   };
 
   const voteLike = (event) => {
-    event.preventDefault()
-    return (
-      console.log("like clicked")
-    )
-  }
+    event.preventDefault();
+    const newLikes = blog.likes+1
+    blogService.addLike(blog.id,newLikes)
+  };
 
   const blogStyle = {
     paddingTop: 10,
@@ -29,17 +30,15 @@ const Blog = ({ blog }) => {
         Blog Title: {blog.title} -{" "}
         <button onClick={toggleBlogDetail}>View</button>
       </div>
-      {blogDetailVisible && <>
-      <div>
-        Blog URL: {blog.url}
-      </div>
-      <div>
-        Total Likes: {blog.likes} <button onClick={voteLike}>Like!</button>
-      </div>
-      <div>
-        Blog Author: {blog.author}
-      </div>
-      </>}
+      {blogDetailVisible && (
+        <>
+          <div>Blog URL: {blog.url}</div>
+          <div>
+            Total Likes: {blog.likes} <button onClick={voteLike}>Like!</button>
+          </div>
+          <div>Blog Author: {blog.author}</div>
+        </>
+      )}
     </div>
   );
 };
