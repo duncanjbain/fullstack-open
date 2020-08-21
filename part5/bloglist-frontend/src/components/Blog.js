@@ -16,8 +16,10 @@ const Blog = ({ blog }) => {
   };
 
   const deleteBlog = (event) => {
+    if(window.confirm('Are you sure you want to delete this blog?')) {
     event.preventDefault()
     blogService.deleteBlog(blog.id)
+    }
   }
   
   const blogStyle = {
