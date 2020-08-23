@@ -1,56 +1,48 @@
-import React, { useState } from 'react'
-import blogService from '../services/blogs'
+import React, { useState } from "react";
 
-const Blog = ({ blog }) => {
-  const [blogDetailVisible, setBlogDetailVisible] = useState(false)
+const Blog = ({ blog, handleLike, handleDelete }) => {
+  const [blogDetailVisible, setBlogDetailVisible] = useState(false);
 
   const toggleBlogDetail = (event) => {
-    event.preventDefault()
-    setBlogDetailVisible(!blogDetailVisible)
-  }
-
-  const voteLike = (event) => {
-    event.preventDefault()
-    const newLikes = blog.likes+1
-    blogService.addLike(blog.id,newLikes)
-  }
-
-  const deleteBlog = (event) => {
-    if(window.confirm('Are you sure you want to delete this blog?')) {
-      event.preventDefault()
-      blogService.deleteBlog(blog.id)
-    }
-  }
+    event.preventDefault();
+    setBlogDetailVisible(!blogDetailVisible);
+  };
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
     paddingBottom: 10,
-    border: 'solid',
+    border: "solid",
     borderWidth: 1,
     marginBottom: 10,
-  }
+  };
 
   return (
     <div style={blogStyle}>
-      <div>
-        Blog Title: {blog.title} -{' '}
-        <button onClick={toggleBlogDetail}>View</button>
+      <div className="blog-title">
+        Blog: {blog.title}
+        <div className="blog-author">Author: {blog.author}</div>
+        <div>
+          <button onClick={toggleBlogDetail}>View</button>
+        </div>
       </div>
       {blogDetailVisible && (
         <>
-          <div>Blog URL: {blog.url}</div>
-          <div>
-            Total Likes: {blog.likes} <button onClick={voteLike}>Like!</button>
+          <div className="blog-url">Blog URL: {blog.url}</div>
+          <div className="blog-likes">
+            Total Likes: {blog.likes}{" "}
+            <button onClick={(event) => handleLike(event, blog.id)}>
+              Like!
+            </button>
           </div>
-          <div>Blog Author: {blog.author}</div>
+          <div className="blog-author">Blog Author: {blog.author}</div>
           <div>
-            <button onClick={deleteBlog}>Delete Blog</button>
+            <button onClick={handleDelete}>Delete Blog</button>
           </div>
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Blog
+export default Blog;

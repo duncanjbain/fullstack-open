@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import DisplayBlogs from './components/DisplayBlogs'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -82,6 +83,31 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
   }
 
+  const handleLike = useCallback(
+    async (event, blogId) => {
+    event.preventDefault()
+    const blogToLike = blogs.find((blog) => blog.id=== blogId)
+    const updatedBlog = {
+      ...blogToLike,
+      likes: blogToLike.likes +1,
+    }
+    console.log(updatedBlog)
+    setBlogs(blogs.map((blog) => (blog.id !== blogId ? blog : updatedBlog)))
+    try {
+      await blogService.addLike(blogId, updatedBlog.likes)
+    } catch(error) {
+      console.log(error)
+    }
+  },[blogs]);
+
+  const handleDelete = (event) => {
+    if(window.confirm('Are you sure you want to delete this blog?')) {
+      event.preventDefault()
+      /* blogService.deleteBlog(blog.id) */
+    }
+  } 
+
+
   const handleUserNameChange = (event) => {
     setUsername(event.target.value)
   }
@@ -108,13 +134,13 @@ const App = () => {
       {user !== null && <h2>Welcome, {user.username}!</h2>}
       {user !== null && <BlogForm />}
       <h2>blogs</h2>
-      {user !== null && <DisplayBlogs blogs={blogsSortedByLikes} />}
+      {user !== null && <DisplayBlogs blogs={blogsSortedByLikes} handleLike={handleLike} handleDelete={handleDelete} />}
     </div>
   )
 }
 
 
-Togglable.propTypes = {
+Toggleable.propTypes = {
   buttonLabel: PropTypes.string.isRequired
 }
 
