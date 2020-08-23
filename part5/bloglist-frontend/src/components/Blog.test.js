@@ -2,6 +2,7 @@ import React from "react";
 import "@testing-library/jest-dom/extend-expect";
 import { render, fireEvent } from "@testing-library/react";
 import Blog from "./Blog";
+import AddBlogForm from "./AddBlogForm";
 
 describe("blog viewing", () => {
   const blog = {
@@ -12,7 +13,7 @@ describe("blog viewing", () => {
   };
 
   test("renders blog title and author only by default", () => {
-    const  component = render(<Blog blog={blog} />);
+    const component = render(<Blog blog={blog} />);
     expect(component.container).toHaveTextContent("Blog: Jest Test Blog");
     expect(component.container).toHaveTextContent("Author: Jest Test Author");
     expect(component.container).not.toHaveTextContent("Blog Url: google.com");
@@ -20,7 +21,7 @@ describe("blog viewing", () => {
   });
 
   test("renders blog url and blog likes when view button is clicked", () => {
-    const  component = render(<Blog blog={blog} />);
+    const component = render(<Blog blog={blog} />);
     const viewButton = component.getByText("View");
     fireEvent.click(viewButton);
     expect(component.container).toHaveTextContent("Blog: Jest Test Blog");
@@ -37,5 +38,39 @@ describe("blog viewing", () => {
     const likeButton = component.getByText("Like!");
     fireEvent.click(likeButton);
     expect(mockHandler.mock.calls).toHaveLength(1);
+  });
+});
+
+describe("blog adding form validation", () => {
+  test("blog form submits correct data", () => {
+    const handleBlogAdd = jest.fn();
+    const component = render(<AddBlogForm handleBlogAdd={handleBlogAdd} />);
+    const titleInput = component.container.querySelector(
+      "input[name='blogTitle']"
+    );
+    const authorInput = component.container.querySelector(
+      "input[name='blogAuthor']"
+    );
+    const urlInput = component.container.querySelector("input[name='blogUrl']");
+
+    const blogForm = component.container.querySelector("form");
+
+    fireEvent.change(titleInput, {
+      target: { value: "Jest Test Blog Title" },
+    });
+
+    fireEvent.change(authorInput, {
+      target: { value: "Jest Test Author" },
+    });
+
+    fireEvent.change(urlInput, {
+      target: { value: "http://testjest.com" },
+    });
+
+    fireEvent.submit(blogForm);
+    expect(handleBlogAdd.mock.calls).toHaveLength(1);
+    expect(handleBlogAdd.mock.calls[0][0].title).toBe("Jest Test Blog Title");
+    expect(handleBlogAdd.mock.calls[0][0].author).toBe("Jest Test Author");
+    expect(handleBlogAdd.mock.calls[0][0].url).toBe("http://testjest.com");
   });
 });
