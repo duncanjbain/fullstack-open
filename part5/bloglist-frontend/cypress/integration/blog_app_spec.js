@@ -68,6 +68,20 @@ describe('Blog app', function() {
       cy.contains('Like!').click()
       cy.contains('Total Likes: 1')
     })
+
+    it('use can delete the newly added blog', function() {
+      cy.contains('New blog').click()
+      cy.get('input[name=blogTitle]').type('New Test Blog')
+      cy.get('input[name=blogAuthor]').type('Test Blog Author')
+      cy.get('input[name=blogUrl').type("http://testblog.com")
+      cy.get('form').submit()
+      cy.contains('New Test Blog')
+      cy.contains('Test Blog Author')
+      cy.wait(1000) 
+      cy.contains('View').click()
+      cy.contains('Delete Blog').click()
+      cy.contains('New Test Blog').should('not.exist')
+    })
   })
 
 

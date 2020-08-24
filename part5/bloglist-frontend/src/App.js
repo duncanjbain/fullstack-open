@@ -100,12 +100,19 @@ const App = () => {
     }
   },[blogs]);
 
-  const handleDelete = (event) => {
-    if(window.confirm('Are you sure you want to delete this blog?')) {
+    const handleDelete = useCallback(
+      async (event, blogId) => {
       event.preventDefault()
-      /* blogService.deleteBlog(blog.id) */
+      console.log(blogId)
+      if(window.confirm('Are you sure you want to delete this blog?')) {
+    setBlogs(blogs.filter((blog) => blog.id !== blogId))
+    try {
+      await blogService.deleteBlog(blogId)
+    } catch (error) {
+      console.log(error)
     }
-  } 
+      }
+    }, [blogs]);
 
 
   const handleUserNameChange = (event) => {
