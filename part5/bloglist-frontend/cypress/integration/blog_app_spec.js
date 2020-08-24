@@ -54,34 +54,65 @@ describe('Blog app', function() {
       cy.contains('Delete Blog')
 
     })
+    describe('user can interact with blog', function() {
+      beforeEach(function() {
+        const blogs = [
+          {
+            title: 'Test Blog One',
+            author: 'Test Author One',
+            url: 'blogone.com'
+          },
+          {
+            title: 'Test Blog Two',
+            author: 'Test Author Two',
+            url: 'blogtwo.com'
+          },
+          {
+            title: 'Test Blog Three',
+            author: 'Test Author Three',
+            url: 'blogthree.com'
+          }
+        ]
+        cy.login({ username: 'testuser', password: 'testpassword' })
+        blogs.map((blog) => {
+          cy.createBlog(blog)
+        })
+        cy.wait(1000) 
+      })
+      it('user can like the new blog', function() {
+        cy.contains('New blog').click()
+        cy.get('input[name=blogTitle]').type('New Test Blog')
+        cy.get('input[name=blogAuthor]').type('Test Blog Author')
+        cy.get('input[name=blogUrl').type("http://testblog.com")
+        cy.get('form').submit()
+        cy.contains('New Test Blog')
+        cy.contains('Test Blog Author')
+        cy.wait(1000) 
+        cy.contains('View').click()
+        cy.contains('Like!').click()
+        cy.contains('Total Likes: 1')
+      })
+  
+      it('user can delete the newly added blog', function() {
+        cy.contains('Test Blog One')
+        cy.contains('Test Author One')
+        cy.wait(1000) 
+        cy.contains('View').click()
+        cy.contains('Delete Blog').click()
+        cy.contains('New Test Blog').should('not.exist')
+      })
+  
+      it('if more than one blog, blogs are sorted by number of likes', function() {
+        cy.get(':nth-child(3) > .blog-title > :nth-child(2) > button').click()
+        cy.contains('Like!').click()
+        cy.contains('Total Likes: 1')
+        cy.wait(1000)
+        cy.reload()
+        cy.get(':nth-child(1) > .blog-title').contains('Test Blog Three')
 
-    it('user can like the new blog', function() {
-      cy.contains('New blog').click()
-      cy.get('input[name=blogTitle]').type('New Test Blog')
-      cy.get('input[name=blogAuthor]').type('Test Blog Author')
-      cy.get('input[name=blogUrl').type("http://testblog.com")
-      cy.get('form').submit()
-      cy.contains('New Test Blog')
-      cy.contains('Test Blog Author')
-      cy.wait(1000) 
-      cy.contains('View').click()
-      cy.contains('Like!').click()
-      cy.contains('Total Likes: 1')
+      })
     })
-
-    it('use can delete the newly added blog', function() {
-      cy.contains('New blog').click()
-      cy.get('input[name=blogTitle]').type('New Test Blog')
-      cy.get('input[name=blogAuthor]').type('Test Blog Author')
-      cy.get('input[name=blogUrl').type("http://testblog.com")
-      cy.get('form').submit()
-      cy.contains('New Test Blog')
-      cy.contains('Test Blog Author')
-      cy.wait(1000) 
-      cy.contains('View').click()
-      cy.contains('Delete Blog').click()
-      cy.contains('New Test Blog').should('not.exist')
-    })
+    
   })
 
 
