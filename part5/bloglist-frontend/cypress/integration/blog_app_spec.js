@@ -32,5 +32,29 @@ describe('Blog app', function() {
 
   })
 
+  describe('when user is logged in functionality', function() {
+    beforeEach(function() {
+      cy.login({ username: 'testuser', password: 'testpassword' })
+      cy.wait(1000) 
+    })
+    it('user can add a new blog', function() {
+      cy.contains('New blog').click()
+      cy.get('input[name=blogTitle]').type('New Test Blog')
+      cy.get('input[name=blogAuthor]').type('Test Blog Author')
+      cy.get('input[name=blogUrl').type("http://testblog.com")
+      cy.get('form').submit()
+      cy.contains('New Test Blog')
+      cy.contains('Test Blog Author')
+      cy.wait(1000) 
+      cy.contains('View').click()
+      cy.contains('Blog URL: http://testblog.com')
+      cy.contains('Total Likes: 0')
+      cy.contains('Like!')
+      cy.contains('Blog Author: Test Blog Author')
+      cy.contains('Delete Blog')
+
+    })
+  })
+
 
 })
