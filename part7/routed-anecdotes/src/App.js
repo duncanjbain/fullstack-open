@@ -7,7 +7,7 @@ const Menu = () => {
   };
   return (
     <div>
-      <Link style={padding} to="/anecdotes">
+      <Link style={padding} to="/">
         Anecdotes
       </Link>
       <Link style={padding} to="/create">
@@ -158,13 +158,18 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-        <Switch>
-          <Route path="/anecdotes">
-            <AnecdoteList anecdotes={anecdotes} />
-          </Route>
-        </Switch>
+      <Switch>
+        <Route exact path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route exact path="/about">
+          <About />
+        </Route>
+        <Route exact path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
       <About />
-      <CreateNew addNew={addNew} />
       <Footer />
     </div>
   );
