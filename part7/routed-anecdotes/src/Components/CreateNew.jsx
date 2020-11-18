@@ -5,9 +5,9 @@ import { useField } from "../Hooks";
 const CreateNew = (props) => {
   const history = useHistory();
 
-  const content = useField("text");
-  const author = useField("text");
-  const info = useField("text");
+  const {resetValue: resetContent, ...content} = useField("text");
+  const {resetValue: resetAuthor, ...author} = useField("text");
+  const {resetValue: resetInfo, ...info} = useField("text");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +19,13 @@ const CreateNew = (props) => {
     });
     history.push("/");
   };
+
+  const resetInputFields = () =>{
+    resetContent();
+    resetAuthor();
+    resetInfo();
+    
+  }
 
   return (
     <div>
@@ -37,6 +44,7 @@ const CreateNew = (props) => {
           <input {...info} />
         </div>
         <button>create</button>
+        <button type="button" onClick={resetInputFields}>reset</button>
       </form>
     </div>
   );
