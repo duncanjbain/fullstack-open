@@ -55,9 +55,7 @@ const App = () => {
   };
 
   const match = useRouteMatch("/anecdotes/:id");
-  console.log(match);
   const anecdote = match ? anecdoteById(match.params.id) : null;
-  console.log("single anec", anecdote);
 
   const handleNotification = (message) => {
     setNotification(message);
@@ -67,26 +65,26 @@ const App = () => {
   };
 
   return (
-      <div>
-        <h1>Software anecdotes</h1>
-        <Menu />
-        <NotificationMessage message={notification} />
-        <Switch>
-          <Route path="/anecdotes/:id">
-            <SingleAnecdote anecdote={anecdote} />
-          </Route>
-          <Route path="/create">
-            <CreateNew addNew={addNew} />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/">
-            <AnecdoteList anecdotes={anecdotes} />
-          </Route>
-        </Switch>
-        <Footer />
-      </div>
+    <div>
+      <h1>Software anecdotes</h1>
+      <Menu />
+      <NotificationMessage message={notification} />
+      <Switch>
+        <Route path="/anecdotes/:id">
+          <SingleAnecdote anecdote={anecdote} />
+        </Route>
+        <Route path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
+      <Footer />
+    </div>
   );
 };
 
