@@ -71,7 +71,11 @@ const Authors = (props) => {
       <div style={{ paddingTop: "2rem" }}>
         <form onSubmit={updateBirthDate}>
         <div style={{ paddingTop: "1rem" }}>
-            Author: <input type="text" value={name} onChange={({target}) => setName(target.value)}/>
+            <select value={name} onChange={({target}) => setName(target.value)}>
+              {result.data.allAuthors.map(author => (
+                <option value={author.name}>{author.name}</option>
+              ))}
+            </select>
           </div>
           <div style={{ paddingTop: "1rem" }}>
             Date of Birth: <input type="number" value={born} onChange={({target}) => setBornTo(Number(target.value))}/>
