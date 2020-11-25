@@ -69,7 +69,8 @@ const resolvers = {
       }
       return books;
     },
-    allAuthors: () => authors,
+    allAuthors: async () => {
+      return await Author.find({}) }
   },
   Author: {
     bookCount: (root, args) =>
