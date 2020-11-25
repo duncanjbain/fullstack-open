@@ -94,15 +94,9 @@ const resolvers = {
       await book.populate('author')
       return book;
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((author) => author.name === args.name);
-      if (author) {
-        const updatedAuthor = { ...author, born: args.setBornTo };
-        authors = authors.map((authors) =>
-          authors.name === args.name ? updatedAuthor : authors
-        );
-        return updatedAuthor;
-      }
+    editAuthor: async (root,args) => {
+      const author = await Author.findOneAndUpdate({name: args.name},{born: args.setBornTo})
+      return author
     },
   },
 };
