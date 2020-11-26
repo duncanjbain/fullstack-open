@@ -6,6 +6,8 @@ const Book = require("./models/book");
 const Author = require("./models/author");
 const User = require("./models/user")
 
+
+const JWT_SECRET = 'jwt_secret'
 const MONGODB_URI = process.env.MONGODB_URI;
 console.log("connecting to", MONGODB_URI);
 
@@ -126,6 +128,19 @@ const resolvers = {
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args})
       }
+    },
+    login: async (root,args) => {
+      const user = await User.findOne({username: args.username})
+      if(!user || args.password !== "hardcodedpassword") {
+        throw new UserInputError("Wrong username/password")
+      }
+      
+      const userForToken = {
+        username: user.name,
+        id: user._id
+      }
+
+      return { value: jwt.sign(userForToken, JWT_SECRET)}
     }
   },
 };
