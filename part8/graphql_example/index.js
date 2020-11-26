@@ -1,9 +1,10 @@
 const { ApolloServer, gql, UserInputError } = require("apollo-server");
-const { v1: uuid } = require("uuid");
+const jwt = require('jsonwebtoken')
 const mongoose = require("mongoose");
 require("dotenv").config();
 const Book = require("./models/book");
 const Author = require("./models/author");
+const User = require("./models/user")
 
 const MONGODB_URI = process.env.MONGODB_URI;
 console.log("connecting to", MONGODB_URI);
@@ -23,6 +24,14 @@ mongoose
   });
 
 const typeDefs = gql`
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+  type Token {
+    value: String!
+  }
   type Book {
     title: String!
     published: Int!
@@ -41,6 +50,7 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book]
     allAuthors: [Author!]!
     bookCount: Int!
+    me: User
   }
 
   type Mutation {
@@ -51,6 +61,14 @@ const typeDefs = gql`
       genres: [String!]!
     ): Book
     editAuthor(name: String!, setBornTo: Int!): Author
+    createUser(
+      username: String!,
+      favoriteGenre: String!,
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `;
 
@@ -98,6 +116,17 @@ const resolvers = {
       const author = await Author.findOneAndUpdate({name: args.name},{born: args.setBornTo})
       return author
     },
+    createUser: async (root, args) => {
+      const user = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre
+      })
+      try {
+       return await user.save()
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args})
+      }
+    }
   },
 };
 
